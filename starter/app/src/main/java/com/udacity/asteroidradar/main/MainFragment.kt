@@ -2,7 +2,9 @@ package com.udacity.asteroidradar.main
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
@@ -19,6 +21,14 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
 
         binding.viewModel = viewModel
+        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+            var size = it.size
+            Toast.makeText(context, "Size: $size", Toast.LENGTH_SHORT).show()
+        })
+
+        viewModel.pictureOfDay.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, "Size: ${it.url}", Toast.LENGTH_SHORT).show()
+        })
 
         setHasOptionsMenu(true)
 
