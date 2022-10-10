@@ -12,6 +12,9 @@ import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
+enum class PictureOfDayMediaType(val value: String) { IMAGE("image"), VIDEO("video") }
+
+
 class MainViewModel : ViewModel() {
 
     private val _asteroids = MutableLiveData<List<Asteroid>>()
@@ -23,17 +26,14 @@ class MainViewModel : ViewModel() {
         get() = _pictureOfDay
 
     init {
-        getAsteroids("2022-10-9", "2022-10-10")
         getPictureOfDay()
     }
 
-    private fun getAsteroids(startDate: String, endDate: String) {
+    private fun getAsteroids() {
         viewModelScope.launch {
             try {
                 val jsonResult: String = AsteroidApi.retrofitService.getAsteroids(
-                    startDate,
-                    endDate,
-                    "p6UXJrgVhx4QRP75Qh09mCpJASs0AS13vtQ9274t"
+                    "nyuXOo8itTcFCmdTFCD5skTLdb5uWPV4cTbDj6sQ"
                 )
                 _asteroids.value = parseAsteroidsJsonResult(JSONObject(jsonResult))
 //                var size = asteroids.value?.size
@@ -46,15 +46,15 @@ class MainViewModel : ViewModel() {
     private fun getPictureOfDay() {
         viewModelScope.launch {
             try {
-                _pictureOfDay.value = PictureOfDayApi.retrofitService.getPictureOfDay("p6UXJrgVhx4QRP75Qh09mCpJASs0AS13vtQ9274t")
-                var url = pictureOfDay.value?.url
+                _pictureOfDay.value =
+                    PictureOfDayApi.retrofitService.getPictureOfDay("nyuXOo8itTcFCmdTFCD5skTLdb5uWPV4cTbDj6sQ")
+//                var url = _pictureOfDay.value?.url
+                getAsteroids()
+
             } catch (e: Exception) {
                 _pictureOfDay.value = null
             }
         }
     }
 
-    fun updateDates(startDate: String, endDate: String) {
-
-    }
 }
