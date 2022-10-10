@@ -7,3 +7,5 @@ Use the updated Gradle version in the `~/gradle/wrapper/gradle-wrapper.propertie
 ```
 distributionUrl = https\://services.gradle.org/distributions/gradle-6.1.1-all.zip
 ```
+## Note: Please add 'apikey.properties' file in the project root directory and put your api key in the below format
+## API_KEY="YOUR_API_KEY_HERE"

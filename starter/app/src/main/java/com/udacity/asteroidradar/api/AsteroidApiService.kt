@@ -11,9 +11,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-//private val httpClient = OkHttpClient.Builder()
-//    .addInterceptor( HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-//    ).build()
+enum class AsteroidApiFilter { TODAY, WEEK, SAVED}
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -27,7 +25,11 @@ private val retrofit = Retrofit.Builder()
 
 interface AsteroidApiService {
     @GET("neo/rest/v1/feed")
-    suspend fun getAsteroids(@Query("api_key") apiKey: String): String
+    suspend fun getAsteroids(
+        @Query("start_date") startDate : String,
+        @Query("end_date") endDate : String,
+        @Query("api_key") apiKey: String)
+    : String
 }
 
 interface PictureOfDayApiService {

@@ -5,10 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
-import com.udacity.asteroidradar.api.AsteroidApi
-import com.udacity.asteroidradar.api.PictureOfDayApi
-import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
+import com.udacity.asteroidradar.api.*
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 
@@ -36,16 +35,28 @@ class MainViewModel : ViewModel() {
 
     init {
         getPictureOfDay()
-        getAsteroids()
+        getAsteroids(AsteroidApiFilter.WEEK)
     }
 
-    private fun getAsteroids() {
+    private fun getAsteroids(filter: AsteroidApiFilter) {
         viewModelScope.launch {
             _status.value = AsteroidApiStatus.LOADING
             try {
-                val jsonResult: String = AsteroidApi.retrofitService.getAsteroids(
-                    "nyuXOo8itTcFCmdTFCD5skTLdb5uWPV4cTbDj6sQ"
-                )
+                val jsonResult: String =
+                    when (filter) {
+                        AsteroidApiFilter.WEEK ->
+                            AsteroidApi.retrofitService.getAsteroids(
+                                "", "",
+                                BuildConfig.API_KEY
+                            )
+                        AsteroidApiFilter.TODAY ->
+                            AsteroidApi.retrofitService.getAsteroids(
+                                getTodayFormattedDate(), getTodayFormattedDate(),
+                                BuildConfig.API_KEY
+                            )
+                        AsteroidApiFilter.SAVED ->
+                            ""
+                    }
                 _asteroids.value = parseAsteroidsJsonResult(JSONObject(jsonResult))
                 _status.value = AsteroidApiStatus.DONE
             } catch (e: Exception) {
@@ -72,6 +83,10 @@ class MainViewModel : ViewModel() {
 
     fun displayAsteroidDetailsComplete() {
         _navigateToSelectedAsteroid.value = null
+    }
+
+    fun updateFilter(filter: AsteroidApiFilter) {
+        getAsteroids(filter)
     }
 
 }
