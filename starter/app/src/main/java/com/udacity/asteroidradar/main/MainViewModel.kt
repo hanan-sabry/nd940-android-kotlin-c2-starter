@@ -27,6 +27,7 @@ class MainViewModel : ViewModel() {
 
     init {
         getPictureOfDay()
+        getAsteroids()
     }
 
     private fun getAsteroids() {
@@ -36,7 +37,6 @@ class MainViewModel : ViewModel() {
                     "nyuXOo8itTcFCmdTFCD5skTLdb5uWPV4cTbDj6sQ"
                 )
                 _asteroids.value = parseAsteroidsJsonResult(JSONObject(jsonResult))
-//                var size = asteroids.value?.size
             } catch (e: Exception) {
                 _asteroids.value = ArrayList()
             }
@@ -48,9 +48,6 @@ class MainViewModel : ViewModel() {
             try {
                 _pictureOfDay.value =
                     PictureOfDayApi.retrofitService.getPictureOfDay("nyuXOo8itTcFCmdTFCD5skTLdb5uWPV4cTbDj6sQ")
-//                var url = _pictureOfDay.value?.url
-                getAsteroids()
-
             } catch (e: Exception) {
                 _pictureOfDay.value = null
             }

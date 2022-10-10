@@ -19,20 +19,11 @@ class MainFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         val binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
-
         binding.viewModel = viewModel
 
         binding.asteroidRecycler.adapter = AsteroidAdapter(AsteroidAdapter.OnClickListener {
             Toast.makeText(context, it.closeApproachDate, Toast.LENGTH_SHORT).show()
         })
-
-//        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
-//            var size = it.size
-//            Toast.makeText(context, "Size: $size", Toast.LENGTH_SHORT).show()
-//        })
-//        viewModel.pictureOfDay.observe(viewLifecycleOwner, Observer {
-//            Toast.makeText(context, "Size: ${it.url}", Toast.LENGTH_SHORT).show()
-//        })
 
         setHasOptionsMenu(true)
 
