@@ -3,6 +3,8 @@ package com.udacity.asteroidradar.database
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.udacity.asteroidradar.domain.Asteroid
+import java.util.concurrent.Flow
 
 @Dao
 interface AsteroidDao {

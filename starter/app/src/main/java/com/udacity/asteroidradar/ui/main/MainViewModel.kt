@@ -2,14 +2,10 @@ package com.udacity.asteroidradar.ui.main
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.getDatabase
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.network.api.AsteroidApiFilter
-import com.udacity.asteroidradar.network.api.PictureOfDayApi
-import com.udacity.asteroidradar.network.api.getNextSevenDayFormattedDate
-import com.udacity.asteroidradar.network.api.getTodayFormattedDate
 import com.udacity.asteroidradar.repository.AsteroidsRepository
 import kotlinx.coroutines.launch
 
@@ -23,33 +19,6 @@ class MainViewModel(application: Application) : ViewModel() {
     private val database = getDatabase(application)
     private val asteroidsRepository = AsteroidsRepository(database)
 
-    private val _status = MutableLiveData<AsteroidApiStatus>()
-    val status: LiveData<AsteroidApiStatus>
-        get() = _status
-
-//    init {
-//        _status.value = AsteroidApiStatus.LOADING
-//        getPictureOfDay()
-//        viewModelScope.launch {
-//            try {
-//                asteroidsRepository.refreshAsteroids()
-//                _status.value = AsteroidApiStatus.DONE
-//            } catch (ex: java.lang.Exception) {
-//                _status.value = AsteroidApiStatus.ERROR
-//            }
-//        }
-//    }
-
-
-    //
-//    private val _asteroids = MutableLiveData<List<Asteroid>>()
-//    val asteroids: LiveData<List<Asteroid>>
-//        get() = _asteroids
-
-    var asteroidList: LiveData<List<Asteroid>> = asteroidsRepository.getTodayAsteroidsBy(
-        getTodayFormattedDate()
-    )
-
     private val _pictureOfDay = MutableLiveData<PictureOfDay>()
     val pictureOfDay: LiveData<PictureOfDay>
         get() = _pictureOfDay
@@ -58,21 +27,31 @@ class MainViewModel(application: Application) : ViewModel() {
     val navigateToSelectedAsteroid: LiveData<Asteroid>
         get() = _navigateToSelectedAsteroid
 
+    private val _databaseAsteroids = asteroidsRepository.weekAsteroids
+    private val _asteroids: MutableLiveData<List<Asteroid>> = _databaseAsteroids as MutableLiveData<List<Asteroid>>
+    val asteroids: LiveData<List<Asteroid>>
+        get() = _asteroids
+
     init {
         viewModelScope.launch {
-            asteroidsRepository.refreshAsteroids()
-        }
-        getPictureOfDay()
-    }
-
-    private fun getPictureOfDay() {
-        viewModelScope.launch {
             try {
-                _pictureOfDay.value =
-                    PictureOfDayApi.retrofitService.getPictureOfDay(BuildConfig.API_KEY)
+                _pictureOfDay.value = asteroidsRepository.getPictureOfDay()
+                asteroidsRepository.refreshAsteroids()
             } catch (e: Exception) {
+                println(e.message)
                 _pictureOfDay.value = null
             }
+        }
+    }
+
+    fun updateFilter(filter: AsteroidApiFilter) {
+        _asteroids.value = when (filter) {
+            AsteroidApiFilter.TODAY ->
+                asteroidsRepository.todayAsteroids.value
+            AsteroidApiFilter.WEEK ->
+                asteroidsRepository.weekAsteroids.value
+            AsteroidApiFilter.SAVED ->
+                asteroidsRepository.allAsteroids.value
         }
     }
 
@@ -82,20 +61,6 @@ class MainViewModel(application: Application) : ViewModel() {
 
     fun displayAsteroidDetailsComplete() {
         _navigateToSelectedAsteroid.value = null
-    }
-
-    fun updateFilter(filter: AsteroidApiFilter) {
-        asteroidList = when (filter) {
-            AsteroidApiFilter.TODAY ->
-                asteroidsRepository.getTodayAsteroidsBy(getTodayFormattedDate())
-            AsteroidApiFilter.WEEK ->
-                asteroidsRepository.getWeekAsteroids(
-                    getTodayFormattedDate(),
-                    getNextSevenDayFormattedDate()
-                )
-            AsteroidApiFilter.SAVED ->
-                asteroidsRepository.allAsteroids
-        }
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {

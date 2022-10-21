@@ -26,13 +26,15 @@ class MainFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
 
-//        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
-//            val size = it?.size
-////            println(size)
-//        })
-
-        binding.asteroidRecycler.adapter = AsteroidAdapter(AsteroidAdapter.OnClickListener {
+        val asteroidAdapter = AsteroidAdapter(AsteroidAdapter.OnClickListener {
             viewModel.displayAsteroidDetails(it)
+        })
+        binding.asteroidRecycler.adapter = asteroidAdapter
+
+        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+            it?.apply {
+                asteroidAdapter.submitList(it)
+            }
         })
 
         viewModel.navigateToSelectedAsteroid.observe(viewLifecycleOwner, Observer {
@@ -60,6 +62,6 @@ class MainFragment : Fragment() {
                 else -> AsteroidApiFilter.SAVED
             }
         )
-        return true
+        return false
     }
 }
