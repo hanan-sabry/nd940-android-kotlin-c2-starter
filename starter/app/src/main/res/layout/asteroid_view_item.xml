@@ -6,7 +6,7 @@
     <data>
         <variable
             name="astorid"
-            type="com.udacity.asteroidradar.Asteroid" />
+            type="com.udacity.asteroidradar.domain.Asteroid" />
     </data>
 
     <RelativeLayout
