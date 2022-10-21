@@ -22,6 +22,7 @@ class AsteroidsApplication : Application() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.UNMETERED)
             .setRequiresCharging(true)
+            .setRequiresBatteryNotLow(true)
             .build()
 
         val repeatingRequest = PeriodicWorkRequestBuilder<RefreshAsteroidsWorker>(1, TimeUnit.DAYS)
