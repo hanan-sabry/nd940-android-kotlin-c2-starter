@@ -40,7 +40,7 @@ class MainViewModel(application: Application) : ViewModel() {
                 asteroidsRepository.refreshAsteroids()
             } catch (e: Exception) {
                 println(e.message)
-                _pictureOfDay.value = null
+                _pictureOfDay!!.value = null
             }
         }
     }
@@ -63,11 +63,11 @@ class MainViewModel(application: Application) : ViewModel() {
     }
 
     fun displayAsteroidDetailsComplete() {
-        _navigateToSelectedAsteroid.value = null
+        _navigateToSelectedAsteroid!!.value = null
     }
 
     class Factory(val app: Application) : ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
                 return MainViewModel(app) as T
