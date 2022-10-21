@@ -6,6 +6,7 @@ import androidx.lifecycle.Transformations
 import com.udacity.asteroidradar.BuildConfig
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.AsteroidsDatabase
+import com.udacity.asteroidradar.database.DatabaseAsteroid
 import com.udacity.asteroidradar.database.asDomainModel
 import com.udacity.asteroidradar.domain.Asteroid
 import com.udacity.asteroidradar.network.api.*
