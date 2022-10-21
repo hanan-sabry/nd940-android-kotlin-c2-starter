@@ -1,3 +1,6 @@
+## Note: Please add 'apikey.properties' file in the project root directory and put your api key in the below format
+## API_KEY="YOUR_API_KEY_HERE"
+
 # Project Title
 
 Asteroid Radar
